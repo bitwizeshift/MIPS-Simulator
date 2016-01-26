@@ -59,21 +59,36 @@ namespace mips32{
 
 		static const int REGISTER_COUNT;
 
+		ubyte* m_code;
+		u32    m_size;
+
 		Instruction m_instruction; //!< The current instruction being executed
-		Word32  m_fregisterss[16]; //!< Floating point registers
-		Word32  m_registers[32];   //!< The 32 mips registers
-		Word32& m_zero;            //!< The zero register $0
-		Word32& m_gp;              //!< Global pointer
-		Word32& m_sp;              //!< Stack pointer
-		Word32& m_fp;              //!< Frame Pointer $30
-		Word32& m_ra;              //!< The jump register $31
-		Word32& m_at;              //!< Assembler Temporary
-		Word32* const m_v[2];      //!< Value registers
-		Word32* const m_a[4];      //!< Argument registers
-		Word32* const m_t[10];     //!< Temporary registers
-		Word32* const m_s[9];      //!< Saved registers
-		Word32* const m_k[2];      //!< Kernel registers
-		u32     m_pc;              //!< The program counter
+		Word32  m_f[16];       //!< Floating point registers
+		Word32  m_r[32];       //!< The 32 mips registers
+		Word32  m_hi;          //!< HI register for multiply/divide
+		Word32  m_lo;          //!< LO register for multiply/divide
+		Word32& m_zero;        //!< The zero register $0
+		Word32& m_at;          //!< Assembler Temporary
+		Word32& m_gp;          //!< Global pointer $28
+		Word32& m_sp;          //!< Stack pointer $29
+		Word32& m_fp;          //!< Frame Pointer $30
+		Word32& m_ra;          //!< The jump register $31
+		const Word32* m_v[2];  //!< Value registers
+		const Word32* m_a[4];  //!< Argument registers
+		const Word32* m_t[10]; //!< Temporary registers
+		const Word32* m_s[9];  //!< Saved registers
+		const Word32* m_k[2];  //!< Kernel registers
+		u32     m_pc;          //!< The program counter
+
+		//--------------------------------------------------------------------------
+		// Private Methods
+		//--------------------------------------------------------------------------
+	private:
+
+		void exec_r_instruction();
+		void exec_i_instruction();
+		void exec_j_instruction();
+		void exec_trap();
 
 	};
 

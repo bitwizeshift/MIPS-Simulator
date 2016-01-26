@@ -95,6 +95,4 @@
 		s16 s;
 	};
 
-
-
 #endif /* INCLUDE_DATATYPES_HPP_ */
