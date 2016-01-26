@@ -27,6 +27,7 @@ namespace mips32{
 	Mips32Simulator::Mips32Simulator( void* program, int size, int pc )
 		:	m_code( (ubyte*) program),
 			m_size( size ),
+			m_data( 0 ),
 			m_zero( m_r[reg_zero] ),
 			m_at( m_r[reg_at] ),
 			m_gp( m_r[reg_gp] ),
@@ -66,8 +67,13 @@ namespace mips32{
 
 	//--------------------------------------------------------------------------
 
-	void Mips32Simulator::decode( const void* instruction ){
-		u32 instr = *((const u32*) instruction);
+	void Mips32Simulator::fetch(){
+		ubyte* ptr = m_code;
+		m_data = *((const u32*) (ptr + m_pc));
+	}
+
+	void Mips32Simulator::decode(){
+		u32 instr = m_data;
 
 		u32 opcode = (instr & bits_op) >> 26;
 
@@ -139,7 +145,6 @@ namespace mips32{
 
 	void Mips32Simulator::execute(){
 
-
 		switch(m_instruction.type){
 		case type_j_instruction:
 			exec_j_instruction();
@@ -151,8 +156,27 @@ namespace mips32{
 			exec_r_instruction();
 			break;
 		}
-		// Do the actual operation
 	}
+
+	void Mips32Simulator::step(){
+		m_pc += 4;
+	}
+
+	void Mips32Simulator::print_registers() const{
+		for( int i = 0; i < REGISTER_COUNT; ++i){
+			printf("%02d: %08X ", i, m_r[i].u);
+			if((1+i)%8==0)
+				printf("\n");
+		}
+	}
+
+	void Mips32Simulator::clear_registers(){
+		for( int i = 0; i < 32; ++i ){
+			m_r[i].u = 0;
+		}
+	}
+
+	//--------------------------------------------------------------------------
 
 	void Mips32Simulator::exec_r_instruction(){
 		r_instruction& instr = m_instruction.r;
@@ -442,24 +466,6 @@ namespace mips32{
 
 	void Mips32Simulator::exec_trap(){
 
-	}
-
-	void Mips32Simulator::step(){
-
-	}
-
-	void Mips32Simulator::printRegisters() const{
-		for( int i = 0; i < REGISTER_COUNT; ++i){
-			printf("%02d: %08X ", i, m_r[i].u);
-			if((1+i)%8==0)
-				printf("\n");
-		}
-	}
-
-	void Mips32Simulator::clearRegisters(){
-		for( int i = 0; i < 32; ++i ){
-			m_r[i].u = 0;
-		}
 	}
 
 } // namespace mips32

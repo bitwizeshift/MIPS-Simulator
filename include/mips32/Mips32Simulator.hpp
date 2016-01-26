@@ -21,6 +21,12 @@
 
 namespace mips32{
 
+	////////////////////////////////////////////////////////////////////////////
+	/// @class Mips32Simulator
+	///
+	///
+	///
+	////////////////////////////////////////////////////////////////////////////
 	class Mips32Simulator : public Simulator<Instruction>{
 
 		//--------------------------------------------------------------------------
@@ -33,12 +39,15 @@ namespace mips32{
 		virtual ~Mips32Simulator();
 
 		//--------------------------------------------------------------------------
-		// Public API
+		// Protected API
 		//--------------------------------------------------------------------------
-	public:
+	protected:
+
+		/// Fetches the next instruction
+		virtual void fetch();
 
 		/// Decodes the instruction into its parts
-		virtual void decode( const void* instruction );
+		virtual void decode();
 
 		/// Executes the desired instruction
 		virtual void execute();
@@ -47,10 +56,10 @@ namespace mips32{
 		virtual void step();
 
 		/// Prints the contents of the registers
-		virtual void printRegisters() const;
+		virtual void print_registers() const;
 
 		/// clears the contents of the registers
-		virtual void clearRegisters();
+		virtual void clear_registers();
 
 		//--------------------------------------------------------------------------
 		// Private Members
@@ -61,6 +70,7 @@ namespace mips32{
 
 		ubyte* m_code;
 		u32    m_size;
+		u32    m_data;
 
 		Instruction m_instruction; //!< The current instruction being executed
 		Word32  m_f[16];       //!< Floating point registers
@@ -91,8 +101,6 @@ namespace mips32{
 		void exec_trap();
 
 	};
-
-
 
 } // namespace mips32
 

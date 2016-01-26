@@ -14,65 +14,91 @@
  * Jan 24, 2016: 
  * - Simulator.hpp created
  */
-#ifndef INCLUDE_SIMULATOR_HPP_
-#define INCLUDE_SIMULATOR_HPP_
+#ifndef SIMULATOR_HPP_
+#define SIMULATOR_HPP_
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1200)
 # pragma once
 #endif
 
-///
-///
-///
-///
-///
-template<class In>
-class Simulator{
+namespace mips32{
 
-	//--------------------------------------------------------------------------
-	// Public Member Types
-	//--------------------------------------------------------------------------
-public:
+	////////////////////////////////////////////////////////////////////////////
+	/// @class Simulator
+	///
+	///
+	///
+	////////////////////////////////////////////////////////////////////////////
+	template<class In>
+	class Simulator{
 
-	typedef In instruction_type;
+		//------------------------------------------------------------------------
+		// Public Member Types
+		//------------------------------------------------------------------------
+	public:
 
-	//--------------------------------------------------------------------------
-	// Constructor
-	//--------------------------------------------------------------------------
-public:
+		typedef In instruction_type;
 
-	virtual ~Simulator() = 0;
+		//------------------------------------------------------------------------
+		// Constructor
+		//------------------------------------------------------------------------
+	public:
 
-	//--------------------------------------------------------------------------
-	// Public API
-	//--------------------------------------------------------------------------
-public:
+		virtual ~Simulator() = 0;
 
-	/// Run the program
-	void run();
+		//------------------------------------------------------------------------
+		// Run
+		//------------------------------------------------------------------------
+	public:
 
-	/// Decodes the instruction into its parts
-	virtual void decode( const void* instruction ) = 0;
+		/// Run the program
+		void run( bool is_stepped, bool is_verbose );
 
-	/// Executes the desired instruction
-	virtual void execute() = 0;
+		//------------------------------------------------------------------------
+		// Public API
+		//------------------------------------------------------------------------
+	protected:
 
-	/// Increases the program counter by 1 instruction
-	virtual void step() = 0;
+		/// Fetches the next instruction
+		virtual void fetch() = 0;
 
-	/// Prints the contents of the registers
-	virtual void printRegisters() const = 0;
+		/// Decodes the instruction into its parts
+		virtual void decode() = 0;
 
-	/// clears the contents of the registers
-	virtual void clearRegisters() = 0;
-};
+		/// Executes the desired instruction
+		virtual void execute() = 0;
 
-template<class In> inline Simulator<In>::~Simulator(){}
+		/// Increases the program counter by 1 instruction
+		virtual void step() = 0;
 
-template<class In>
-inline void Simulator<In>::run(){
+		/// Prints the contents of the registers
+		virtual void print_registers() const = 0;
 
+		/// clears the contents of the registers
+		virtual void clear_registers() = 0;
+	};
+
+	template<class In> inline Simulator<In>::~Simulator(){}
+
+	template<class In>
+	inline void Simulator<In>::run( bool is_stepped, bool is_verbose ){
+		bool is_halted = false;
+
+		while(!is_halted){
+			fetch();
+			decode();
+			execute();
+			step();
+
+			if( is_stepped ){
+				// print instruction
+				// step
+			}
+			if( is_verbose ){
+				print_registers();
+			}
+		}
+	}
 }
 
-
-#endif /* INCLUDE_SIMULATOR_HPP_ */
+#endif /* SIMULATOR_HPP_ */

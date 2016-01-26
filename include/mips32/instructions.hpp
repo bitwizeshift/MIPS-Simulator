@@ -246,7 +246,7 @@ namespace mips32{
 
 	template<u32 bit>
 	s32 sign_extend( u32 value ){
-		const u32 mask   = (2*(1 << bit)-1);
+		const u32 mask   = ((1 << (bit+1))-1);
 		const u32 extend = ~mask;
 		const u32 result = (value & mask) | ((value & (1 << bit)) ? extend : 0);
 		return static_cast<s32>(result);
@@ -254,7 +254,7 @@ namespace mips32{
 
 	template<u32 bit>
 	u32 zero_extend( u32 value ){
-		const u32 mask   = (2*(1 << bit)-1);
+		const u32 mask   = ((1 << (bit+1))-1);
 		const u32 result = (value & mask);
 		return static_cast<u32>(result);
 	}
